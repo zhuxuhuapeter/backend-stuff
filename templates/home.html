@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block content %}
+<script>
+   $(document).ready(function(){
+      $("#add_orders").click(function(){
+          $('.ui.modal').modal('show');
+  })
+  
+  $("#save").click(function() {
+      var customer_id=$("#customer_id").val();
+      console.log(customer_id);
+
+      var customer_each = customer_id.split("\n");
+      console.log(customer_each)
+     
+      for (var i=0; i< customer_each.length; ++i) {
+        console.log(customer_each[i]);
+        $.ajax({
+          url: '/order',
+          type: 'POST',
+          contentType:'application/json',
+          data: JSON.stringify({CustomerID:customer_each[i]}),          
+          dataType: 'json'
+        })
+        
+      }
+      $('.ui.modal').modal('hide');
+  })
+  });
+</script>
+  <div class="ui input">
+    <input type="text" placeholder="CompanyName">
+  </div>
+  <div class="ui input">
+    <input type="text" placeholder="Phone">
+  </div>
+  <div class="ui checkbox">
+    <input type="checkbox" name="ContactName">
+    <label>ContactName</label>
+  </div>
+  <button class="ui button primary">Filter</button>
+  <div>
+    <button id="add_orders" class="ui button"> Add Order</button> 
+  </div>
+  
+
+
+<table class="ui celled table">
+    <thead>
+      <tr><th>CompanyName</th>
+      <th>ContactName</th>
+      <th>PHONE</th>
+    </tr></thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{order.CustomerID}}</td>
+        <td>{{order.ContactName}}</td>
+        <td>{{order.Phone}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Add Customer ID
+    </div>
+    <div class="content">
+      <div class="ui form">
+        <div class="field">
+          <label>Enter Customer ID</label>
+          <textarea id="customer_id"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <div id="save" class="ui positive right labeled icon button">
+        Add Customers
+        <i class="plus icon"></i>
+      </div>
+    </div>
+  </div>
+{% endblock %}
